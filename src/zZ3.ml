@@ -174,7 +174,7 @@ module Make (C : Context) = struct
   type sat =
     | Unsat of Z3.Expr.expr Lazy.t (** Proof *)
     | Sat of Z3.Model.model Lazy.t (** Model *)
-    | Unkown of string (** Reason *)
+    | Unknown of string (** Reason *)
 
   (** {2 Solver calls} *)
   module Solver = struct
@@ -188,9 +188,9 @@ module Make (C : Context) = struct
 
     let check ~solver l =
       match check solver l with
-        | UNSATISFIABLE -> Unsat (lazy (opt_get @@ get_proof solver))
-        | UNKNOWN -> Unkown (get_reason_unknown solver)
-        | SATISFIABLE -> Sat (lazy (opt_get @@ get_model solver))
+	| UNSATISFIABLE -> Unsat (lazy (opt_get @@ get_proof solver))
+	| UNKNOWN -> Unknown (get_reason_unknown solver)
+	| SATISFIABLE -> Sat (lazy (opt_get @@ get_model solver))
 
   end
 
@@ -222,10 +222,10 @@ module Make (C : Context) = struct
       List.iter (add ~solver) l ;
       let open Z3.Optimize in
       let v = match check solver with
-        | Z3.Solver.UNSATISFIABLE ->
-          Unsat (lazy (failwith "get_proof is not implemented for optimizing solvers."))
-        | Z3.Solver.UNKNOWN -> Unkown (get_reason_unknown solver)
-        | Z3.Solver.SATISFIABLE -> Sat (lazy (opt_get @@ get_model solver))
+	| Z3.Solver.UNSATISFIABLE ->
+	  Unsat (lazy (failwith "get_proof is not implemented for optimizing solvers."))
+	| Z3.Solver.UNKNOWN -> Unknown (get_reason_unknown solver)
+	| Z3.Solver.SATISFIABLE -> Sat (lazy (opt_get @@ get_model solver))
       in v
 
   end

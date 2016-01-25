@@ -157,7 +157,7 @@ module type S = sig
   type sat =
     | Unsat of Z3.Expr.expr Lazy.t (** Proof *)
     | Sat of Z3.Model.model Lazy.t (** Model *)
-    | Unkown of string (** Reason *)
+    | Unknown of string (** Reason *)
 
   module Solver : SOLVER
     with type t = Z3.Solver.solver
