@@ -129,6 +129,27 @@ module type S = sig
 
   end
 
+  module Z3Func : sig
+    module PTyp : sig
+      type 'a t
+
+      val empty : unit t
+      val ( |:: ) : ('a, 'x) typ -> 'b t -> ('a * 'b) t
+      val cons : ('a, 'x) typ -> 'b t -> ('a * 'b) t
+    end
+    module PList : sig
+      type 'a t
+
+      val empty : unit t
+      val ( |:: ) : 'a term -> 'b t -> ('a * 'b) t
+      val cons : 'a term -> 'b t -> ('a * 'b) t
+    end
+
+    type (-'a,+'b) t
+    val declare : 'a PTyp.t -> ('b,'y) typ -> string -> ('a,'b) t
+    val apply: ('a, 'b) t -> 'a PList.t -> 'b term
+  end
+
   module Z3Array : sig
     val get : [< ('d, 'r) zarray] term -> 'd term -> 'r term
 

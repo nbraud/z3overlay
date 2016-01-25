@@ -169,6 +169,33 @@ module Make (C : Context) = struct
 
   end
 
+  module Z3Func = struct
+    open FuncDecl
+
+    module PTyp = struct
+      type 'a t = Sort.sort list
+      let empty : unit t = []
+      let ( |:: ) (x: ('a, 'x) typ) (y: 'b t) : ('a * 'b) t =
+	(Symbol.sort x) :: y
+      let cons = ( |:: )
+    end
+    module PList = struct
+      type 'a t = Expr.expr list
+
+      let empty: unit t = []
+
+      let ( |:: ) (x: 'a term) (l: 'b t): ('a * 'b) t = x::l
+      let cons = ( |:: )
+    end
+
+    type (-'a,+'b) t = func_decl
+
+    let apply (f: ('a, 'b) t) (p: 'a PList.t) : 'b term =
+      apply f p
+
+    let declare (l: 'a PTyp.t) (r: ('b,'y) typ) s : ('a, 'b) t =
+      mk_func_decl_s ctx s l (Symbol.sort r)
+  end
 
 
   type sat =
